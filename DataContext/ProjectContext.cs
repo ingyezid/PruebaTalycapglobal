@@ -20,6 +20,7 @@ namespace PruebaTalycapglobal.DataContext
                 cliente.ToTable("Clientes");
                 cliente.HasKey(c => c.Id);
                 cliente.Property(c => c.Identificacion).IsRequired().HasMaxLength(10);
+                cliente.HasIndex(c => c.Identificacion).IsUnique();
                 cliente.Property(c => c.TipoDocumento).IsRequired();
                 cliente.Property(c => c.Nombres).IsRequired().HasMaxLength(50);
                 cliente.Property(c => c.Apellidos).IsRequired().HasMaxLength(50);
