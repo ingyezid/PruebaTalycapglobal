@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PruebaTalycapglobal.DataContext;
+using PruebaTalycapglobal.Repositories;
 using PruebaTalycapglobal.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<ProjectContext>(options =>
 
 // Inyectar dependencias de los servicios
 builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 
 var app = builder.Build();
 

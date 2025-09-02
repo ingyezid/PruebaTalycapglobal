@@ -1,20 +1,20 @@
-﻿using PruebaTalycapglobal.Models;
+﻿using PruebaTalycapglobal.DTOs;
 
 namespace PruebaTalycapglobal.Services
 {
     public interface IClienteService
     {
-        Task<List<Cliente>?> GetAll();
+        Task<List<ClienteDto>?> ObtenerTodosAsync();
 
-        Task<Cliente?> GetById(Guid id);
+        Task<ClienteDto?> ObtenerByIdAsync(Guid id);
 
-        Task Save (Cliente cliente);
+        Task<ClienteDto> CrearClienteAsync(ClienteCreateDto clienteCreateDto);
 
-        Task Update (Guid id, Cliente cliente);
+        Task ActualizarClienteAsync(Guid id, ClienteUpdateDto clienteUpdateDto);
 
-        Task Delete (Guid id);
+        Task EliminarClienteAsync(Guid id);
 
-        Task<Cliente?> GetByIdentificacion(string identificacion);
+        Task<ClienteDto?> ObtenerByIdentificacionAsync(string identificacion);
 
     }
 }

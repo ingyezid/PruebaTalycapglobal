@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PruebaTalycapglobal.Models;
+using PruebaTalycapglobal.DTOs;
 using PruebaTalycapglobal.Services;
 
 namespace PruebaTalycapglobal.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] 
+    [Route("api/[controller]")]
     public class ClienteController : ControllerBase
     {
         private readonly IClienteService _clienteService;
@@ -16,68 +16,72 @@ namespace PruebaTalycapglobal.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<Cliente>), StatusCodes.Status200OK)]        
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]        
+        [ProducesResponseType(typeof(List<ClienteDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Cliente>?>> GetAll()
+        public async Task<ActionResult<List<ClienteDto>?>> GetAll()
         {
-            var result =  await _clienteService.GetAll();
+            var result = await _clienteService.ObtenerTodosAsync();
 
             if (result == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Clientes no encontrados" });
             }
 
-             return result;
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-       
-        [ProducesResponseType(typeof(Cliente), StatusCodes.Status200OK)]
+
+        [ProducesResponseType(typeof(ClienteDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Cliente?>> GetById(Guid id)
+        public async Task<ActionResult<ClienteDto?>> GetById(Guid id)
         {
-            var result = await _clienteService.GetById(id);
+            var result = await _clienteService.ObtenerByIdAsync(id);
 
             if (result == null)
-            { 
-                return NotFound();
+            {
+                return NotFound(new { message = "Cliente no encontrado" });
             }
 
-            return result;
+            return Ok(result);
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Cliente),StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ClienteDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Cliente>> Post([FromBody] Cliente cliente)
+        public async Task<ActionResult<ClienteDto>> Post([FromBody] ClienteCreateDto dto)
         {
-            await _clienteService.Save(cliente);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var nuevoCliente = await _clienteService.CrearClienteAsync(dto);
 
-            return CreatedAtAction(nameof(Post), new { id = cliente.Id }, cliente);
+            return CreatedAtAction(nameof(Post), nuevoCliente);
         }
 
-        [HttpPut("{id}")]   
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(Guid id, [FromBody] Cliente cliente)
+        public async Task<IActionResult> Put(Guid id, [FromBody] ClienteUpdateDto dto)
         {
-            if (id != cliente.Id)
-                return BadRequest();
+            if (id != dto.Id)
+                return BadRequest(new { message = "El ID del cliente no coincide" });
 
-            var clienteFind = await _clienteService.GetById(id);
+            var clienteFind = await _clienteService.ObtenerByIdAsync(id);
             if (clienteFind == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Cliente no encontrado" });
             }
 
-            await _clienteService.Update(id, cliente);
+            await _clienteService.ActualizarClienteAsync(id, dto);
 
             return NoContent();
         }
@@ -89,32 +93,32 @@ namespace PruebaTalycapglobal.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var clienteFind = await _clienteService.GetById(id);
+            var clienteFind = await _clienteService.ObtenerByIdAsync(id);
             if (clienteFind == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Cliente no encontrado" });
             }
 
-            await _clienteService.Delete(id);
+            await _clienteService.EliminarClienteAsync(id);
 
             return NoContent();
         }
 
         [HttpGet("identificacion/{identificacion}")]
-        [ProducesResponseType(typeof(Cliente), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ClienteDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Cliente?>> GetByIdentificacion(string identificacion)
-        {             
-            var result = await _clienteService.GetByIdentificacion(identificacion);
+        public async Task<ActionResult<ClienteDto?>> GetByIdentificacion(string identificacion)
+        {
+            var result = await _clienteService.ObtenerByIdentificacionAsync(identificacion);
 
             if (result == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Cliente no encontrado" });
             }
 
-            return result;
+            return Ok(result);
         }
 
     }

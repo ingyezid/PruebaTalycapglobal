@@ -1,23 +1,43 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PruebaTalycapglobal.DataContext;
+﻿
+using PruebaTalycapglobal.DTOs;
 using PruebaTalycapglobal.Models;
+using PruebaTalycapglobal.Repositories;
 
 namespace PruebaTalycapglobal.Services
 {
     public class ClienteService : IClienteService
     {
-        private readonly ProjectContext _context;
+        private readonly IClienteRepository _clienteRepository;
 
-        public ClienteService(ProjectContext dbContext)
+        public ClienteService(IClienteRepository clienteRepository)
         {
-            _context = dbContext;
+            _clienteRepository = clienteRepository;
         }
 
-        public async Task<List<Cliente>?> GetAll()
+
+        public async Task<List<ClienteDto>?> ObtenerTodosAsync()
         {
             try
             {
-                var result = await _context.Clientes.ToListAsync();
+                var clientes = await _clienteRepository.GetAllAsync();
+
+                if (clientes == null)
+                {
+                    return null;
+                }
+
+                // Mapeando entidad a Dto
+                var result = clientes?.Select(c => new ClienteDto
+                {
+                    Id = c.Id,
+                    Identificacion = c.Identificacion,
+                    TipoDocumento = c.TipoDocumento,
+                    Nombres = c.Nombres,
+                    Apellidos = c.Apellidos,
+                    Direccion = c.Direccion,
+                    Telefono = c.Telefono,
+                    Email = c.Email
+                }).ToList();
 
                 return result;
             }
@@ -27,11 +47,29 @@ namespace PruebaTalycapglobal.Services
             }
         }
 
-        public async Task<Cliente?> GetById(Guid id)
+        public async Task<ClienteDto?> ObtenerByIdAsync(Guid id)
         {
             try
             {
-                var result = await _context.Clientes.FindAsync(id);
+                var cliente = await _clienteRepository.GetByIdAsync(id);
+
+                if (cliente == null)
+                {
+                    return null;
+                }
+
+                // Mapeando entidad a Dto
+                var result = new ClienteDto
+                {
+                    Id = cliente.Id,
+                    Identificacion = cliente.Identificacion,
+                    TipoDocumento = cliente.TipoDocumento,
+                    Nombres = cliente.Nombres,
+                    Apellidos = cliente.Apellidos,
+                    Direccion = cliente.Direccion,
+                    Telefono = cliente.Telefono,
+                    Email = cliente.Email
+                };
 
                 return result;
             }
@@ -41,16 +79,35 @@ namespace PruebaTalycapglobal.Services
             }
         }
 
-
-        public async Task Save(Cliente cliente)
+        public async Task<ClienteDto> CrearClienteAsync(ClienteCreateDto clienteCreateDto)
         {
             try
             {
-                cliente.Id = Guid.NewGuid();
+                var cliente = await _clienteRepository.CreateAsync(new Cliente
+                {
+                    Identificacion = clienteCreateDto.Identificacion,
+                    TipoDocumento = clienteCreateDto.TipoDocumento,
+                    Nombres = clienteCreateDto.Nombres,
+                    Apellidos = clienteCreateDto.Apellidos,
+                    Direccion = clienteCreateDto.Direccion,
+                    Telefono = clienteCreateDto.Telefono,
+                    Email = clienteCreateDto.Email
+                });
 
-                _context.Add(cliente);
+                var nuevoCliente = new ClienteDto
+                {
+                    Id = cliente.Id,
+                    Identificacion = cliente.Identificacion,
+                    TipoDocumento = cliente.TipoDocumento,
+                    Nombres = cliente.Nombres,
+                    Apellidos = cliente.Apellidos,
+                    Direccion = cliente.Direccion,
+                    Telefono = cliente.Telefono,
+                    Email = cliente.Email
+                };
 
-                await _context.SaveChangesAsync();
+                return nuevoCliente;
+
             }
             catch (Exception ex)
             {
@@ -58,42 +115,41 @@ namespace PruebaTalycapglobal.Services
             }
         }
 
-        public async Task Update(Guid id, Cliente cliente)
+        public async Task ActualizarClienteAsync(Guid id, ClienteUpdateDto clienteUpdateDto)
         {
             try
             {
-                var clienteActual = await _context.Clientes.FindAsync(id);
+                var clienteActual = await _clienteRepository.GetByIdAsync(id);
 
                 if (clienteActual != null)
                 {
-                    clienteActual.Identificacion = cliente.Identificacion;
-                    clienteActual.TipoDocumento = cliente.TipoDocumento;
-                    clienteActual.Nombres = cliente.Nombres;
-                    clienteActual.Apellidos = cliente.Apellidos;
-                    clienteActual.Direccion = cliente.Direccion;
-                    clienteActual.Telefono = cliente.Telefono;
-                    clienteActual.Email = cliente.Email;
-
-                    await _context.SaveChangesAsync();
+                    await _clienteRepository.UpdateAsync(id, new Cliente
+                    {
+                        Id = id,
+                        Identificacion = clienteUpdateDto.Identificacion,
+                        TipoDocumento = clienteUpdateDto.TipoDocumento,
+                        Nombres = clienteUpdateDto.Nombres,
+                        Apellidos = clienteUpdateDto.Apellidos,
+                        Direccion = clienteUpdateDto.Direccion,
+                        Telefono = clienteUpdateDto.Telefono,
+                        Email = clienteUpdateDto.Email
+                    });
                 }
-
             }
             catch (Exception ex)
             {
                 throw new Exception("Error al actualizar el cliente", ex);
             }
         }
-        public async Task Delete(Guid id)
+        public async Task EliminarClienteAsync(Guid id)
         {
             try
             {
-                var clienteActual = await _context.Clientes.FindAsync(id);
+                var clienteActual = await _clienteRepository.GetByIdAsync(id);
 
                 if (clienteActual != null)
                 {
-                    _context.Remove(clienteActual);
-
-                    await _context.SaveChangesAsync();
+                    await _clienteRepository.DeleteAsync(id);
                 }
             }
             catch (Exception ex)
@@ -102,21 +158,37 @@ namespace PruebaTalycapglobal.Services
             }
         }
 
-        public async Task<Cliente?> GetByIdentificacion(string identificacion)
+        public async Task<ClienteDto?> ObtenerByIdentificacionAsync(string identificacion)
         {
             try
             {
-                var result = await _context.Clientes.FirstOrDefaultAsync(c => c.Identificacion == identificacion);
+                var cliente = await _clienteRepository.GetByIdentificacionAsync(identificacion);
+
+                if (cliente == null)
+                {
+                    return null;
+                }
+
+                // Mapeando entidad a Dto
+                var result = new ClienteDto
+                {
+                    Id = cliente.Id,
+                    Identificacion = cliente.Identificacion,
+                    TipoDocumento = cliente.TipoDocumento,
+                    Nombres = cliente.Nombres,
+                    Apellidos = cliente.Apellidos,
+                    Direccion = cliente.Direccion,
+                    Telefono = cliente.Telefono,
+                    Email = cliente.Email
+                };
 
                 return result;
 
             }
-
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener el cliente por identificacion", ex);
+                throw new Exception("Error al obtener el cliente por Identificacion", ex);
             }
-
         }
     }
 }
