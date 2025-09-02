@@ -17,6 +17,7 @@ namespace PruebaTalycapglobal.DataContext
 
             modelBuilder.Entity<Cliente>(cliente =>
             {
+                cliente.ToTable("Clientes");
                 cliente.HasKey(c => c.Id);
                 cliente.Property(c => c.Identificacion).IsRequired().HasMaxLength(10);
                 cliente.Property(c => c.TipoDocumento).IsRequired();

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PruebaTalycapglobal.DataContext;
+using PruebaTalycapglobal.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +11,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// conexion a base de datos SQL SERVER
 builder.Services.AddDbContext<ProjectContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("conexionProject"))
 );
 
+// Inyectar dependencias de los servicios
+builder.Services.AddScoped<IClienteService, ClienteService>();
 
 var app = builder.Build();
 
