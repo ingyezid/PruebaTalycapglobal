@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PruebaTalycapglobal.DTOs;
 using PruebaTalycapglobal.Services;
 
@@ -16,10 +17,8 @@ namespace PruebaTalycapglobal.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<ClienteDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+        [ProducesResponseType(typeof(List<ClienteDto>), StatusCodes.Status200OK)]        
         public async Task<ActionResult<List<ClienteDto>?>> GetAll()
         {
             var result = await _clienteService.ObtenerTodosAsync();
@@ -33,11 +32,8 @@ namespace PruebaTalycapglobal.Controllers
         }
 
         [HttpGet("{id}")]
-
+        [Authorize]
         [ProducesResponseType(typeof(ClienteDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ClienteDto?>> GetById(Guid id)
         {
             var result = await _clienteService.ObtenerByIdAsync(id);
@@ -51,9 +47,8 @@ namespace PruebaTalycapglobal.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(typeof(ClienteDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ClienteDto>> Post([FromBody] ClienteCreateDto dto)
         {
             if (!ModelState.IsValid)
@@ -66,10 +61,8 @@ namespace PruebaTalycapglobal.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Put(Guid id, [FromBody] ClienteUpdateDto dto)
         {
             if (id != dto.Id)
@@ -87,10 +80,8 @@ namespace PruebaTalycapglobal.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var clienteFind = await _clienteService.ObtenerByIdAsync(id);
@@ -105,10 +96,8 @@ namespace PruebaTalycapglobal.Controllers
         }
 
         [HttpGet("identificacion/{identificacion}")]
+        [Authorize]
         [ProducesResponseType(typeof(ClienteDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ClienteDto?>> GetByIdentificacion(string identificacion)
         {
             var result = await _clienteService.ObtenerByIdentificacionAsync(identificacion);
