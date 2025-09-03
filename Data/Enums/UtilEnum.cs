@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PruebaTalycapglobal.Enums
+namespace PruebaTalycapglobal.Data.Enums
 {
     public class UtilEnum
     {

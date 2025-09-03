@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PruebaTalycapglobal.DataContext;
-using PruebaTalycapglobal.Models;
+using PruebaTalycapglobal.Data.Context;
+using PruebaTalycapglobal.Data.Models;
 
 namespace PruebaTalycapglobal.Repositories
 {

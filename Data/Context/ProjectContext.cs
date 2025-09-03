@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PruebaTalycapglobal.Models;
+using PruebaTalycapglobal.Data.Models;
 
-namespace PruebaTalycapglobal.DataContext
+namespace PruebaTalycapglobal.Data.Context
 {
     public class ProjectContext : DbContext
     {

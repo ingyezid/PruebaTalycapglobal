@@ -1,4 +1,4 @@
-﻿using PruebaTalycapglobal.Models;
+﻿using PruebaTalycapglobal.Data.Models;
 
 namespace PruebaTalycapglobal.Repositories
 {

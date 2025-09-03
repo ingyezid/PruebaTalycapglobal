@@ -1,7 +1,7 @@
-﻿using PruebaTalycapglobal.Models;
-using static PruebaTalycapglobal.Enums.UtilEnum;
+﻿using PruebaTalycapglobal.Data.Models;
+using static PruebaTalycapglobal.Data.Enums.UtilEnum;
 
-namespace PruebaTalycapglobal.DataContext
+namespace PruebaTalycapglobal.Data.Context
 {
     public static class DataSeeder
     {

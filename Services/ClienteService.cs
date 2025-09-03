@@ -1,6 +1,6 @@
 ﻿
+using PruebaTalycapglobal.Data.Models;
 using PruebaTalycapglobal.DTOs;
-using PruebaTalycapglobal.Models;
 using PruebaTalycapglobal.Repositories;
 
 namespace PruebaTalycapglobal.Services

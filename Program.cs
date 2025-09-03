@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using PruebaTalycapglobal.DataContext;
+using PruebaTalycapglobal.Data.Context;
 using PruebaTalycapglobal.Repositories;
 using PruebaTalycapglobal.Services;
 using System.Security.Claims;

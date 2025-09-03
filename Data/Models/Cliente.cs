@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static PruebaTalycapglobal.Enums.UtilEnum;
+using static PruebaTalycapglobal.Data.Enums.UtilEnum;
 
 
-namespace PruebaTalycapglobal.Models
+namespace PruebaTalycapglobal.Data.Models
 {
     public class Cliente
     {

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static PruebaTalycapglobal.Enums.UtilEnum;
+using static PruebaTalycapglobal.Data.Enums.UtilEnum;
 
 namespace PruebaTalycapglobal.DTOs
 {
