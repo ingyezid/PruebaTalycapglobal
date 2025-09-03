@@ -110,14 +110,28 @@ namespace PruebaTalycapglobal.Repositories
 
         public async Task<Cliente?> GetByIdentificacionAsync(string identificacion)
         {
-            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Identificacion == identificacion);
-
-            if (cliente == null)
+            try
             {
-                return null;
-            }
 
-            return cliente;
+                var sqlSP = await _context.Clientes
+                 .FromSqlInterpolated($"EXEC sp_ObtenerClienteByIdentificacion {identificacion}")
+                 .AsNoTracking()
+                 .ToListAsync();
+
+                var cliente = sqlSP.FirstOrDefault();
+
+                if (cliente == null)
+                {
+                    return null;
+                }
+
+                return cliente;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el cliente por identificación con SP", ex);
+            }
         }
 
     }
